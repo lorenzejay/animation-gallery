@@ -141,11 +141,9 @@ export default function Home() {
 
   function moveToEnd() {
     const copyOrder = [...ordered];
-    copyOrder.shift();
-    // copyOrder.push(copyOrder.shift() as any) as any;
+    // copyOrder.shift();
+    copyOrder.push(copyOrder.shift() as any) as any;
     setOrdered(copyOrder);
-
-    // console.log("new ordered", ordered);
   }
   useEffect(() => {
     console.log("orderedShowNumber", ordered[showNumber]);
