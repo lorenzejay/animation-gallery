@@ -44,7 +44,7 @@ const ImageAnimation = ({
             alt="s"
             width={1920}
             height={2880}
-            className="max-w-[200px] max-h-[250px] mx-auto xl:max-w-[350px] xl:max-h-[437px] 3xl:max-w-none 3xl:max-h-[480px]"
+            className="max-w-[200px] max-h-[250px] mx-auto md:max-w-xs md:max-h-[400px] xl:max-w-[350px] xl:max-h-[437px] 3xl:max-w-none 3xl:max-h-[480px]"
           />
         </motion.div>
       </Link>

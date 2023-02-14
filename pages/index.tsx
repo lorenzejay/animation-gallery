@@ -108,7 +108,7 @@ export default function Home() {
           },
           exit: {
             opacity: 0,
-            transition: { duration: 5, delay: 2 },
+            transition: { duration: 0.5 },
           },
         }}
         animate={"animate"}
@@ -178,7 +178,7 @@ export default function Home() {
               </motion.div>
             </AnimatePresence>
           </div>
-          <motion.div className="flex flex-col md:flex-row items-center justify-between w-full lg:w-[1000px] h-[50vh] space-y-12 md:space-y-0 mx-auto absolute text-white">
+          <motion.div className="flex flex-col md:flex-row items-center justify-between w-full md:w-3/4 lg:w-[800px] h-[50vh] space-y-12 md:space-y-0 mx-auto absolute text-white">
             <AnimatePresence>
               <motion.button
                 className="flex items-center space-x-2"
@@ -195,10 +195,10 @@ export default function Home() {
                   });
                 }}
               >
-                <motion.div className="uppercase text-3xl font-thin tracking-[0.2rem]">
+                <motion.div className="uppercase text-lg lg:text-3xl font-thin tracking-[0.2rem]">
                   prev
                 </motion.div>
-                <motion.div className="border-t-2 w-16"></motion.div>
+                <motion.div className="border-t-2 w-4 lg:w-16"></motion.div>
               </motion.button>
             </AnimatePresence>
 
@@ -208,7 +208,7 @@ export default function Home() {
                 animate={{ opacity: 1 }}
                 exit={{ x: 200 }}
                 transition={{ duration: 0.75 }}
-                className="relative h-[50vh] w-full flex items-center justify-center flex-grow"
+                className="relative h-[50vh] w-1/2 flex items-center justify-center flex-grow"
               >
                 {orderedGallery.map((n, i) => {
                   return (
@@ -240,8 +240,8 @@ export default function Home() {
                   });
                 }}
               >
-                <motion.div className="border-t-2 w-16"></motion.div>
-                <div className="uppercase text-3xl font-thin tracking-[0.2rem]">
+                <motion.div className="border-t-2 w-4 lg:w-16"></motion.div>
+                <div className="uppercase text-xl lg:text-3xl font-thin tracking-[0.2rem] md:mr-32">
                   Next
                 </div>
               </motion.button>
@@ -250,7 +250,7 @@ export default function Home() {
 
           <AnimatePresence>
             <motion.div
-              className="absolute -bottom-6 lg:-bottom-20 3xl:-bottom-40 "
+              className="absolute -bottom-6 md:-bottom-12 lg:-bottom-10 xl:-bottom-14 3xl:-bottom-40 "
               initial={{ y: 100, opacity: 0 }}
               animate={{
                 y: 0,
