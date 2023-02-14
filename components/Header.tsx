@@ -1,19 +1,14 @@
-import { motion, useAnimationControls } from "framer-motion";
-import { useEffect } from "react";
+import React from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
 const Header = () => {
-  const navControl = useAnimationControls();
-  // useEffect(() => {
-  //   // console.log("re-rendered nav");
-  //   navControl.start({ opacity: 1, y: 0 });
-  //   // if(router)
-  // }, [navControl]);
   return (
     <motion.nav
-      initial={{ opacity: 0, y: -200 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ delay: 1.5 }}
       viewport={{ once: true }}
-      className="absolute w-full text-white "
+      className="absolute w-full text-white z-[100]"
     >
       <div className="max-w-7xl mx-auto py-4 px-4 sm:px-12 3xl:px-0 flex items-center justify-between">
         <div>
@@ -39,9 +34,9 @@ const Header = () => {
         <motion.div
           initial={{ y: 150 }}
           animate={{ y: 0 }}
-          className="uppercase text-3xl lg:text-5xl italic tracking-[0.2rem]"
+          className="uppercase text-white text-3xl lg:text-5xl italic tracking-[0.2rem]"
         >
-          untitled 001
+          <Link href={"/"}>Charis Cheung</Link>
         </motion.div>
         <div>
           <motion.svg
@@ -69,4 +64,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default React.memo(Header);

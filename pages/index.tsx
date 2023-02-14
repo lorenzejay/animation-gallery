@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Head from "next/head";
-import Image from "next/image";
 
 import {
   AnimatePresence,
@@ -13,10 +12,13 @@ import {
 import Layout from "@/components/Layout";
 import Link from "next/link";
 import ImageAnimation from "@/components/ImageAnimation";
+import { useAppDispatch, useAppState } from "@/utils/appReducer";
 
 const CARD_OFFSET = 10;
 const SCALE_FACTOR = 0.06;
 export default function Home() {
+  const { orderedGallery } = useAppState();
+  const dispatch = useAppDispatch();
   // const x = useMotionValue(0);
   // useMotionValueEvent(x, "change", (latest) => {
   //   console.log("x changed to", latest);
@@ -43,71 +45,7 @@ export default function Home() {
 
   const [showNumber, setShowNumber] = useState(0);
   console.log("showNumber", showNumber);
-  const [ordered, setOrdered] = useState([
-    {
-      slug: "/portraits",
-      type: "portraits",
-      name: "mikitA",
-      imageSrc: "/gallery/mikita.jpg",
-      animation: animation1,
-      sequence: sequence1,
-      background: "#6d7671",
-    },
-    {
-      slug: "/vivid",
-      type: "vivid",
-      name: "oladimeji",
-      imageSrc: "/gallery/oladimeji.jpg",
-      initial: { x: -700 },
-      transition: {
-        duration: 0.5,
-        // delay: 0.35,
-      },
-      sequence: sequence2,
-      animation: animation2,
-      background: "#708C99",
-    },
-    {
-      slug: "/kimson",
-      type: "lifestyle",
-      name: "kimson",
-      imageSrc: "/gallery/kimson.jpg",
-      initial: { x: -380 },
-      transition: {
-        duration: 0.5,
-      },
-      sequence: sequence3,
-      animation: animation3,
-      background: "#D5D1CB",
-    },
 
-    // {
-    //   slug: "/fashion",
-    //   type: "fashion",
-    //   name: "behrouz",
-    //   imageSrc: "/gallery/behrouz.jpg",
-    //   initial: { x: 380 },
-    //   transition: {
-    //     duration: 0.5,
-    //   },
-    //   sequence: sequence4,
-    //   animation: animation4,
-    //   background: "#d1ac77",
-    // },
-    // {
-    //   slug: "/artwork",
-    //   type: "artwork",
-    //   name: "lucas",
-    //   imageSrc: "/gallery/lucas.jpg",
-    //   initial: { x: 700 },
-    //   transition: {
-    //     duration: 0.5,
-    //   },
-    //   sequence: sequence5,
-    //   animation: animation5,
-    //   background: "#664F42",
-    // },
-  ]);
   const [animationNumber, setAnimationNumber] = useState(animation1);
 
   async function sequence5() {
@@ -140,27 +78,30 @@ export default function Home() {
   }
 
   function moveToEnd() {
-    const copyOrder = [...ordered];
-    // copyOrder.shift();
+    const copyOrder = [...orderedGallery];
     copyOrder.push(copyOrder.shift() as any) as any;
-    setOrdered(copyOrder);
+    dispatch({ type: "GALLERY_REORDERED", reorderedGallery: [...copyOrder] });
+    // setOrdered([...copyOrder]);
   }
-  useEffect(() => {
-    console.log("orderedShowNumber", ordered[showNumber]);
-  }, [showNumber, ordered]);
-
+  function reverseMove() {
+    const copyOrder = [...orderedGallery];
+    copyOrder.unshift(copyOrder.pop() as any) as any;
+    dispatch({ type: "GALLERY_REORDERED", reorderedGallery: [...copyOrder] });
+    // setOrdered([...copyOrder]);
+  }
+  console.log("orderedGallery", orderedGallery);
   return (
     <>
       <motion.div
         className="overflow-hidden"
-        style={{ background: ordered[showNumber].background }}
+        style={{ background: orderedGallery[0].background }}
         variants={{
           initial: {
             background: "#6d7671",
             opacity: 0.9,
           },
           animate: {
-            background: ordered[showNumber].background,
+            background: orderedGallery[0].background,
             opacity: 1,
           },
           exit: {
@@ -178,63 +119,9 @@ export default function Home() {
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        {/* <motion.nav
-            initial={{ opacity: 0, y: -200 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5 }}
-            className="text-white max-w-7xl mx-auto py-4 px-4 sm:px-12 3xl:px-0 flex items-center justify-between"
-          >
-            <div>
-              <motion.svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="icon icon-tabler icon-tabler-menu"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                initial={{ y: 150 }}
-                animate={{ y: 0 }}
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M4 8l16 0"></path>
-                <path d="M4 16l16 0"></path>
-              </motion.svg>
-            </div>
-            <motion.div
-              initial={{ y: 150 }}
-              animate={{ y: 0 }}
-              className="uppercase text-3xl lg:text-5xl italic tracking-[0.2rem]"
-            >
-              untitled 001
-            </motion.div>
-            <div>
-              <motion.svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="icon icon-tabler icon-tabler-brand-instagram"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                initial={{ y: 150 }}
-                animate={{ y: 0 }}
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z"></path>
-                <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
-                <path d="M16.5 7.5l0 0"></path>
-              </motion.svg>
-            </div>
-          </motion.nav> */}
+
         <main className="relative flex items-center justify-center h-screen w-full text-white font-medium">
-          <div className="absolute left-32 text-4xl lg:space-y-12">
+          <div className="absolute left-12 text-xl lg:space-y-2s">
             <AnimatePresence>
               <motion.div
                 initial={{ opacity: 0, x: -500 }}
@@ -247,201 +134,136 @@ export default function Home() {
               >
                 0{showNumber + 1}
               </motion.div>
-            </AnimatePresence>
-            <motion.div
-              className="w-4 h-32"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{
-                delay: 1.5,
-              }}
-            >
               <motion.div
-                className="bg-blue-500"
-                key={showNumber}
-                initial={"initial"}
-                animate={"animate"}
-                // custom={(showNumber / 5) * 100 }
+                className="w-1 mx-auto h-32"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{
                   delay: 1.5,
-                  duration: 0.4,
-                  type: "spring",
                 }}
-                variants={{
-                  initial: {
-                    height: `${((showNumber + 1) / 5) * 100}%`,
-                  },
-                  animate: () => ({
-                    height: `${((showNumber + 1) / 5) * 100}%`,
-                  }),
-                }}
-              ></motion.div>
-            </motion.div>
-            {/* <div>{showNumber + 1}</div> */}
-            <motion.div
-              initial={{ opacity: 0, x: -500 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{
-                duration: 0.5,
-                delay: 1.5,
-              }}
-            >
-              05
-            </motion.div>
-          </div>
-          <motion.div className="flex items-center justify-between w-[1200px] h-full mx-auto absolute text-white">
-            <motion.button
-              className="flex items-center space-x-2"
-              initial={{ opacity: 0, y: 400 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.5 }}
-              // onClick={() => moveToEnd()}
-            >
-              <motion.div className="uppercase text-3xl font-thin tracking-[0.2rem]">
-                prev
-              </motion.div>
-              <motion.div className="border-t-2 w-16"></motion.div>
-            </motion.button>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.75 }}
-              className="flex items-center justify-center flex-grow relative top-0 ml-64 mb-72 2xl:mb-[450px]"
-            >
-              <AnimatePresence
-                onExitComplete={() => console.log("completed")}
-                // ex
               >
-                {ordered.map((n, i) => {
+                <motion.div
+                  className="bg-white"
+                  key={showNumber}
+                  initial={"initial"}
+                  animate={"animate"}
+                  // custom={(showNumber / 5) * 100 }
+                  transition={{
+                    delay: 1.5,
+                    duration: 0.4,
+                    type: "spring",
+                  }}
+                  variants={{
+                    initial: {
+                      height: `${((showNumber + 1) / 5) * 100}%`,
+                    },
+                    animate: () => ({
+                      height: `${((showNumber + 1) / 5) * 100}%`,
+                    }),
+                  }}
+                ></motion.div>
+              </motion.div>
+              {/* <div>{showNumber + 1}</div> */}
+              <motion.div
+                initial={{ opacity: 0, x: -500 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{
+                  duration: 0.5,
+                  delay: 1.5,
+                }}
+              >
+                05
+              </motion.div>
+            </AnimatePresence>
+          </div>
+          <motion.div className="flex flex-col md:flex-row items-center justify-between w-full lg:w-[1000px] h-[50vh] space-y-12 md:space-y-0 mx-auto absolute text-white">
+            <AnimatePresence>
+              <motion.button
+                className="flex items-center space-x-2"
+                initial={{ opacity: 0, y: 400 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.5 }}
+                onClick={() => {
+                  setShowNumber((prev) => {
+                    if (prev === 0) return prev;
+
+                    // prev - 1;
+                    reverseMove();
+                    return prev - 1;
+                  });
+                }}
+              >
+                <motion.div className="uppercase text-3xl font-thin tracking-[0.2rem]">
+                  prev
+                </motion.div>
+                <motion.div className="border-t-2 w-16"></motion.div>
+              </motion.button>
+            </AnimatePresence>
+
+            <AnimatePresence>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ x: 200 }}
+                transition={{ duration: 0.75 }}
+                className="relative h-[50vh] w-full flex items-center justify-center flex-grow"
+              >
+                {orderedGallery.map((n, i) => {
                   return (
-                    <ImageAnimation n={n} i={i} ordered={ordered} key={i} />
-                    // <motion.div
-                    //   key={i}
-                    //   className={`absolute max-w-sm top-0 right-0 left-0`}
-                    //   initial={{
-                    //     ...n?.initial,
-                    //     opacity: 1,
-                    //     zIndex: ordered.length - i,
-                    //   }}
-                    //   animate={n.animation}
-                    //   custom={ordered.length - i}
-                    //   variants={variants}
-                    //   onViewportEnter={n.sequence}
-                    //   transition={n?.transition}
-                    //   exit={{
-                    //     x: 500,
-                    //     opacity: 0,
-                    //     transition: {
-                    //       duration: 2,
-                    //       delay: 1,
-                    //     },
-                    //   }}
-                    // >
-                    //   <Link href={`${n.slug}`} key={i}>
-                    //     <Image
-                    //       src={n.imageSrc}
-                    //       alt="s"
-                    //       width={1920}
-                    //       height={2880}
-                    //       className="max-h-[480px]"
-                    //     />
-                    //   </Link>
-                    // </motion.div>
+                    <ImageAnimation
+                      n={n}
+                      i={i}
+                      ordered={orderedGallery}
+                      key={i}
+                    />
                   );
                 })}
-              </AnimatePresence>
-            </motion.div>
-            <motion.button
-              className="flex items-center space-x-2"
-              initial={{ opacity: 0, y: 400 }}
-              animate={{ opacity: 1, y: 0, scale: 1 - 0 * 0.06 }}
-              transition={{ delay: 1.5 }}
-              onClick={() => {
-                setTitleTextDelayDuration(0.15);
-                setTestingAnimation("bringToFront");
-                moveToEnd();
-                setShowNumber((prev) => {
-                  setAnimationNumber(ordered[prev].animation);
-                  if (prev === ordered.length - 1) {
-                    return 0;
-                  }
-                  return prev + 1;
-                });
-
-                console.log("this is what should move", ordered[showNumber]);
-                // animation1.start({duratio})
-                // animation1.start({ x: 100, opacity: 0 });
-                // animation1.stop();
-                // animation2.start({ z: 10 });
-                // animation3.start({ rotate: 6 });
-                // animation4.start({ rotate: 6 });
-                // animation5.start({ rotate: 5 });
-                // animation2.start({
-                //   rotate: 0,
-                //   z: 50,
-                //   transition: {
-                //     delay: 0.5,
-                //   },
-                // });
-                // animation2.start({ x: 0, opacity: 1 });
-              }}
-            >
-              <motion.div className="border-t-2 w-16"></motion.div>
-              <div className="uppercase text-3xl font-thin tracking-[0.2rem]">
-                Next
-              </div>
-            </motion.button>
+              </motion.div>
+            </AnimatePresence>
+            <AnimatePresence>
+              <motion.button
+                className="flex items-center space-x-2"
+                initial={{ opacity: 0, y: 400 }}
+                animate={{ opacity: 1, y: 0, scale: 1 - 0 * 0.06 }}
+                transition={{ delay: 1.5 }}
+                onClick={() => {
+                  setTitleTextDelayDuration(0.15);
+                  setTestingAnimation("bringToFront");
+                  setShowNumber((prev) => {
+                    if (prev === orderedGallery.length - 1) {
+                      return prev;
+                    }
+                    moveToEnd();
+                    return prev + 1;
+                  });
+                }}
+              >
+                <motion.div className="border-t-2 w-16"></motion.div>
+                <div className="uppercase text-3xl font-thin tracking-[0.2rem]">
+                  Next
+                </div>
+              </motion.button>
+            </AnimatePresence>
           </motion.div>
-          {/* <motion.div
-              className="flex relative bg-red-500 w-full"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              {ordered.map((n, i) => {
-                return (
-                  <motion.div
-                    key={i}
-                    className={`absolute max-w-sm z-10 top-0 right-0 left-0`}
-                    initial={{ ...n?.initial }}
-                    animate={{
-                      top: i * -CARD_OFFSET,
-                      scale: 1 - i * SCALE_FACTOR,
-                      zIndex: ordered.length - i,
-                      ...n?.animation,
-                    }}
-                    onViewportEnter={n?.sequence}
-                    transition={n?.transition}
-                  >
-                    <Image
-                      src={n.imageSrc}
-                      alt="s"
-                      width={1920}
-                      height={2880}
-                      className="max-h-[480px]"
-                    />
-                  </motion.div>
-                );
-              })}
-            </motion.div> */}
+
           <AnimatePresence>
             <motion.div
-              className="absolute -bottom-40 "
+              className="absolute -bottom-6 lg:-bottom-20 3xl:-bottom-40 "
               initial={{ y: 100, opacity: 0 }}
               animate={{
                 y: 0,
-                opacity: 0.8,
+                opacity: 0.5,
               }}
               exit={{
                 opacity: 0,
                 y: -100,
-                transition: { delay: 0, duration: 0.3 },
+                transition: { delay: 0, duration: 0.45 },
               }}
               transition={{ ease: "easeIn", delay: titleTextDelayDuration }}
-              key={ordered[0].type}
+              key={orderedGallery[0].type}
             >
-              <motion.h2 className="text-[236px] text-white tracking-[0.3rem] capitalize">
-                {ordered[0].type}
+              <motion.h2 className="z-[100] text-7xl sm:text-[128px] 3xl:text-[236px] text-white tracking-[0.3rem] capitalize">
+                {orderedGallery[0].type}
               </motion.h2>
             </motion.div>
           </AnimatePresence>

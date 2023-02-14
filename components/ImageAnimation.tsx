@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 const ImageAnimation = ({
   n,
@@ -12,40 +11,44 @@ const ImageAnimation = ({
   i: number;
   ordered: any;
 }) => {
-  console.log("n", n);
-
   return (
-    <motion.div
-      key={n}
-      className={`absolute max-w-sm top-0 right-0 left-0 `}
-      initial={{
-        ...n?.initial,
-        opacity: 1,
-        zIndex: ordered.length - i,
-      }}
-      animate={n.animation}
-      custom={ordered.length - i}
-      // variants={variants}
-      onViewportEnter={n.sequence}
-      transition={n?.transition}
-      exit={{
-        opacity: 0,
-        x: 200,
-        transition: {
-          duration: 2,
-        },
-      }}
-    >
+    <AnimatePresence mode="wait">
       <Link href={`${n.slug}`} key={i}>
-        <Image
-          src={n.imageSrc}
-          alt="s"
-          width={1920}
-          height={2880}
-          className="max-h-[480px]"
-        />
+        <motion.div
+          key={n}
+          className={`absolute max-w-sm top-0 right-0 left-0 mx-auto`}
+          initial={{
+            x: n.initialX,
+
+            opacity: 0.75,
+            zIndex: ordered.length - i,
+          }}
+          animate={{
+            opacity: 1,
+            x: 0,
+            rotate: i * 2,
+          }}
+          transition={{
+            duration: 0.5,
+            delay: 0.5,
+          }}
+          exit={{
+            x: 200,
+            transition: {
+              duration: 2,
+            },
+          }}
+        >
+          <Image
+            src={n.imageSrc}
+            alt="s"
+            width={1920}
+            height={2880}
+            className="max-w-[200px] max-h-[250px] mx-auto xl:max-w-[350px] xl:max-h-[437px] 3xl:max-w-none 3xl:max-h-[480px]"
+          />
+        </motion.div>
       </Link>
-    </motion.div>
+    </AnimatePresence>
   );
 };
 

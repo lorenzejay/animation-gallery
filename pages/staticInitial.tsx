@@ -7,7 +7,9 @@ import {
   motion,
   Reorder,
   useAnimationControls,
+  useCycle,
 } from "framer-motion";
+import CycledImage from "@/components/cycledImage";
 
 const CARD_OFFSET = 10;
 const SCALE_FACTOR = 0.06;
@@ -42,69 +44,75 @@ export default function StaticInitial() {
       animation: animation1,
       sequence: sequence1,
       background: "#6d7671",
-      x: 0,
+      initialX: 0,
+      nextX: 0,
+      initialRotate: 0,
+      nextRotate: 10,
     },
     {
       slug: "/vivid",
       type: "vivid",
       name: "oladimeji",
       imageSrc: "/gallery/oladimeji.jpg",
-      x: -700,
+      initialX: -700,
+      nextX: 0,
+      initialRotate: 0,
+      nextRotate: 10,
       initial: { x: -700 },
       transition: {
         duration: 0.5,
         // delay: 0.35,
       },
       sequence: sequence2,
-      animation: animation2,
+      animation: animate1,
       background: "#708C99",
     },
-    {
-      slug: "/kimson",
-      type: "lifestyle",
-      name: "kimson",
-      imageSrc: "/gallery/kimson.jpg",
-      initial: { x: -380 },
-      transition: {
-        duration: 0.5,
-        // delay: 0.2,
-      },
-      x: -380,
-      sequence: sequence3,
-      animation: animation3,
-      background: "#D5D1CB",
-    },
+    // {
+    //   slug: "/kimson",
+    //   type: "lifestyle",
+    //   name: "kimson",
+    //   imageSrc: "/gallery/kimson.jpg",
+    //   initial: { x: -380 },
+    //   transition: {
+    //     duration: 0.5,
+    //     // delay: 0.2,
+    //   },
+    //   x: -380,
+    //   sequence: sequence3,
+    //   animation: animation3,
+    //   background: "#D5D1CB",
+    // },
 
-    {
-      slug: "/fashion",
-      type: "fashion",
-      name: "behrouz",
-      imageSrc: "/gallery/behrouz.jpg",
-      initial: { x: 380 },
-      transition: {
-        duration: 0.5,
-        // delay: 0.2,
-      },
-      x: 380,
-      sequence: sequence4,
-      animation: animation4,
-      background: "#d1ac77",
-    },
-    {
-      slug: "/artwork",
-      type: "artwork",
-      name: "lucas",
-      imageSrc: "/gallery/lucas.jpg",
-      x: 700,
-      initial: { x: 700 },
-      transition: {
-        duration: 0.5,
-        // delay: 0.35,
-      },
-      sequence: sequence5,
-      animation: animation5,
-      background: "#664F42",
-    },
+    // {
+    //   slug: "/fashion",
+    //   type: "fashion",
+    //   name: "behrouz",
+    //   imageSrc: "/gallery/behrouz.jpg",
+    //   initial: { x: 380 },
+    //   transition: {
+    //     duration: 0.5,
+    //     // delay: 0.2,
+    //   },
+    //   x: 380,
+    //   sequence: sequence4,
+    //   animation: animation4,
+    //   background: "#d1ac77",
+    // },
+    // {
+    //   slug: "/artwork",
+    //   type: "artwork",
+    //   name: "lucas",
+    //   imageSrc: "/gallery/lucas.jpg",
+    //   x: 700,
+    //   initial: { x: 700 },
+    //   transition: {
+    //     duration: 0.5,
+    //     // delay: 0.35,
+    //   },
+    //   sequence: sequence5,
+    //   animation: animation5,
+    //   background: "#664F42",
+    // },
   ]);
   const [animationNumber, setAnimationNumber] = useState(animation1);
 
@@ -250,6 +258,7 @@ export default function StaticInitial() {
                 initial={{ opacity: 0, y: 400 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.5 }}
+                onClick={() => cycle()}
                 // onClick={() => moveToEnd()}
               >
                 <motion.div className="uppercase text-3xl font-thin tracking-[0.2rem]">
@@ -267,57 +276,60 @@ export default function StaticInitial() {
                 // values={ordered}
                 >
                   {ordered.map((n, i) => {
+                    console.log("n.animation", n.animation);
                     return (
-                      <motion.div
-                        // value={n}
-                        key={i}
-                        className={` max-w-sm top-0 right-0 left-0`}
-                        initial="initial"
-                        animate={"animate"}
-                        custom={i === 0 ? 0 : ordered.length - i * 5}
-                        variants={{
-                          initial: {
-                            opacity: 1,
-                            position: "relative",
-                            x: n.x,
-                          },
-                          remove: {
-                            x: 200,
-                            opacity: 0.8,
-                          },
+                      <CycledImage />
+                      // <motion.div
+                      //   // value={n}
+                      //   key={i}
+                      //   className={` max-w-sm top-0 right-0 left-0`}
+                      //   // initial="initial"
+                      //   // animate={"animate"}
+                      //   animate={animate1}
+                      //   custom={i === 0 ? 0 : ordered.length - i * 5}
+                      //   variants={{
+                      //     initial: {
+                      //       opacity: 1,
+                      //       position: "relative",
+                      //       x: n.x,
+                      //     },
+                      //     remove: {
+                      //       x: 200,
+                      //       opacity: 0.8,
+                      //     },
 
-                          animate: (rotationAmount) => ({
-                            opacity: 1,
-                            rotate: rotationAmount,
-                            position: "absolute",
-                            zIndex: ordered.length - i,
-                            x: 0,
-                            transition: {
-                              duration: 1,
-                            },
-                          }),
-                        }}
-                        // animate={{
-                        //   top: i * -CARD_OFFSET,
-                        //   // scale: 1 - i * SCALE_FACTOR,
-                        //   zIndex: ordered.length - i,
-                        //   ...n.animation,
-                        //   // rotate: 0,
-                        // }}
-                        onViewportEnter={n.sequence}
-                        transition={n?.transition}
-                        exit={{
-                          opacity: 0,
-                        }}
-                      >
-                        <Image
-                          src={n.imageSrc}
-                          alt="s"
-                          width={1920}
-                          height={2880}
-                          className="max-h-[480px]"
-                        />
-                      </motion.div>
+                      //     animate: (rotationAmount) => ({
+                      //       opacity: 1,
+                      //       rotate: rotationAmount,
+                      //       position: "absolute",
+                      //       zIndex: ordered.length - i,
+                      //       x: 0,
+                      //       transition: {
+                      //         duration: 1,
+                      //       },
+                      //     }),
+                      //   }}
+                      //   // animate={{
+                      //   //   top: i * -CARD_OFFSET,
+                      //   //   // scale: 1 - i * SCALE_FACTOR,
+                      //   //   zIndex: ordered.length - i,
+                      //   //   ...n.animation,
+                      //   //   // rotate: 0,
+                      //   // }}
+                      //   // onViewportEnter={n.sequence}
+                      //   transition={n?.transition}
+                      //   exit={{
+                      //     opacity: 0,
+                      //   }}
+                      // >
+                      //   <Image
+                      //     src={n.imageSrc}
+                      //     alt="s"
+                      //     width={1920}
+                      //     height={2880}
+                      //     className="max-h-[480px]"
+                      //   />
+                      // </motion.div>
                     );
                   })}
                 </AnimatePresence>

@@ -1,7 +1,11 @@
+import AnimatedGallery from "@/components/AnimatedGallery";
 import Layout from "@/components/Layout";
+import { useAppState } from "@/utils/appReducer";
 
 const Portraits = () => {
-  return <div>portrait</div>;
+  const { orderedGallery } = useAppState();
+
+  return <AnimatedGallery orderedGallery={orderedGallery} />;
 };
 
 export default Portraits;
