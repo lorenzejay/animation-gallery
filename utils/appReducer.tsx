@@ -122,6 +122,7 @@ export function AppStateProvider({ children }: { children: any }) {
   }, [state, dispatch]);
 
   return (
+    // @ts-ignore
     <AppStateContext.Provider value={value}>
       {children}
     </AppStateContext.Provider>

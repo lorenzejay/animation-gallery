@@ -18,6 +18,7 @@ const Lifestyle = () => {
     newOrder[0] = newOrder.splice(findVividIndex, 1, newOrder[0])[0];
     // newOrder.splice(0, 0, orderedGallery[findVividIndex]);
     if (newOrder) {
+      // @ts-ignore
       dispatch({ type: "GALLERY_REORDERED", reorderedGallery: newOrder });
     }
   }, [dispatch, router.pathname]);

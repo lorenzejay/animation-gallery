@@ -80,12 +80,14 @@ export default function Home() {
   function moveToEnd() {
     const copyOrder = [...orderedGallery];
     copyOrder.push(copyOrder.shift() as any) as any;
+    // @ts-ignore
     dispatch({ type: "GALLERY_REORDERED", reorderedGallery: [...copyOrder] });
     // setOrdered([...copyOrder]);
   }
   function reverseMove() {
     const copyOrder = [...orderedGallery];
     copyOrder.unshift(copyOrder.pop() as any) as any;
+    // @ts-ignore
     dispatch({ type: "GALLERY_REORDERED", reorderedGallery: [...copyOrder] });
     // setOrdered([...copyOrder]);
   }
