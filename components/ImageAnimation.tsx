@@ -15,7 +15,7 @@ const ImageAnimation = ({
     <AnimatePresence mode="wait">
       <Link href={`${n.slug}`} key={i}>
         <motion.div
-          key={n}
+          key={i}
           className={`absolute max-w-sm top-0 right-0 left-0 mx-auto`}
           initial={{
             x: n.initialX,
@@ -35,7 +35,7 @@ const ImageAnimation = ({
           exit={{
             x: 200,
             transition: {
-              duration: 2,
+              duration: 0.5,
             },
           }}
         >

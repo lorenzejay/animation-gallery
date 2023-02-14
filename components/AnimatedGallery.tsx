@@ -73,7 +73,7 @@ const AnimatedGallery = ({ orderedGallery }) => {
         }
       : {
           animate: {
-            y: -750,
+            y: -700,
             opacity: 1,
           },
         };
@@ -102,7 +102,7 @@ const AnimatedGallery = ({ orderedGallery }) => {
     >
       <div className="relative flex justify-center items-center">
         <AnimatePresence>
-          <motion.div className="h-screen relative  w-full flex items-center justify-center ">
+          <motion.div className="pt-32 lg:pt-0 h-screen relative  w-full flex items-center justify-center ">
             <motion.div
               key={orderedGallery[0].name}
               className={`max-w-sm `}
@@ -115,7 +115,7 @@ const AnimatedGallery = ({ orderedGallery }) => {
               variants={variants}
               transition={{
                 duration: 0.75,
-                delay: 0.5,
+                delay: 1,
               }}
             >
               <Image
@@ -126,16 +126,6 @@ const AnimatedGallery = ({ orderedGallery }) => {
                 className="z-10 lg:max-h-[480px]"
               />
             </motion.div>
-            {/* {orderedGallery.map((n, i) => {
-                return (
-                  <ImageAnimation
-                    n={n}
-                    i={i}
-                    ordered={orderedGallery}
-                    key={i}
-                  />
-                );
-              })} */}
           </motion.div>
         </AnimatePresence>
         <motion.div className="w-[1200px] h-full mx-auto absolute text-white">
@@ -164,20 +154,13 @@ const AnimatedGallery = ({ orderedGallery }) => {
           </AnimatePresence>
         </motion.div>
       </div>
-      <motion.div
-        animate={{ y: -250 }}
-        transition={{ delay: 0.5, duration: 0.75 }}
-        className="px-12 flex justify-between space-x-12"
-      >
-        <Image
-          src={orderedGallery[0].imageSrc}
-          alt="s"
-          width={1920}
-          height={2880}
-          className="max-w-sm max-h-[480px] object-cover"
-        />
-
-        <div className="pt-32">
+      <AnimatePresence mode="wait">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, y: -300 }}
+          transition={{ delay: 1, duration: 0.75 }}
+          className="px-12 flex justify-between space-x-12"
+        >
           <Image
             src={orderedGallery[0].imageSrc}
             alt="s"
@@ -185,8 +168,18 @@ const AnimatedGallery = ({ orderedGallery }) => {
             height={2880}
             className="max-w-sm max-h-[480px] object-cover"
           />
-        </div>
-      </motion.div>
+
+          <div className="pt-32">
+            <Image
+              src={orderedGallery[0].imageSrc}
+              alt="s"
+              width={1920}
+              height={2880}
+              className="max-w-sm max-h-[480px] object-cover"
+            />
+          </div>
+        </motion.div>
+      </AnimatePresence>
     </motion.div>
   );
 };
