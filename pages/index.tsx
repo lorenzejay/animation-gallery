@@ -99,7 +99,7 @@ export default function Home() {
   return (
     // <AnimatePresence mode="wait">
     <motion.div
-      className=""
+      className="overflow-hidden"
       style={{ background: orderedGallery[0].background }}
       variants={{
         initial: {
