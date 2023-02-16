@@ -4,6 +4,7 @@ import Layout from "@/components/Layout";
 import {
   useAppDispatch,
   useAppState,
+  useIsHomepage,
   usePageGallery,
 } from "@/utils/appReducer";
 import { AnimatePresence, motion } from "framer-motion";
@@ -15,8 +16,9 @@ const Vivid = () => {
   const [titleTextDelayDuration, setTitleTextDelayDuration] = useState(0.5);
 
   const { orderedGallery } = useAppState();
+  const isHomepage = useIsHomepage();
   const dispatch = useAppDispatch();
-
+  console.log("isHomepage", isHomepage);
   // function moveToEnd() {
   //   const copyOrder = [...orderedGallery];
   //   copyOrder.push(copyOrder.shift() as any) as any;
@@ -30,6 +32,7 @@ const Vivid = () => {
   //   // setOrdered([...copyOrder]);
   // }
   const router = useRouter();
+
   useEffect(() => {
     const findVividIndex = orderedGallery.findIndex(
       (g) => g.slug === router.pathname

@@ -1,7 +1,39 @@
 import React from "react";
 
+function galleryReducer(state, action) {
+  switch (action.type) {
+    case "GALLERY_REORDERED":
+      return action.reorderedGallery;
+    default:
+      return state;
+  }
+}
+function pageGalleryReducer(state, action) {
+  switch (action.type) {
+    case "PAGE_GALLERY":
+      return action.selectedGallery;
+    default:
+      return state;
+  }
+}
+function isHomepageReducer(state, action) {
+  switch (action.type) {
+    case "IS_HOMEPAGE":
+      return action.isHomepage;
+    default:
+      return state;
+  }
+}
+function appReducer(state, action) {
+  return {
+    orderedGallery: galleryReducer(state.reorderedGallery, action),
+    selectedGallery: pageGalleryReducer(state.selectedGallery, action),
+    isHomepage: isHomepageReducer(state.isHomepageReducer, action),
+  };
+}
 export function getInitialState() {
   return {
+    isHomepage: true,
     orderedGallery: [
       {
         slug: "/portraits",
@@ -84,28 +116,6 @@ export function getInitialState() {
     },
   };
 }
-function galleryReducer(state, action) {
-  switch (action.type) {
-    case "GALLERY_REORDERED":
-      return action.reorderedGallery;
-    default:
-      return state;
-  }
-}
-function pageGalleryReducer(state, action) {
-  switch (action.type) {
-    case "PAGE_GALLERY":
-      return action.selectedGallery;
-    default:
-      return state;
-  }
-}
-function appReducer(state, action) {
-  return {
-    orderedGallery: galleryReducer(state.reorderedGallery, action),
-    selectedGallery: pageGalleryReducer(state.selectedGallery, action),
-  };
-}
 const AppStateContext = React.createContext({
   state: getInitialState(),
   dispatch: () => {},
@@ -139,4 +149,8 @@ export function useAppDispatch() {
 export function usePageGallery() {
   const { selectedGallery } = useAppState();
   return selectedGallery;
+}
+export function useIsHomepage() {
+  const { isHomepage } = useAppState();
+  return isHomepage;
 }

@@ -14,23 +14,34 @@ const Layout = ({ children }: LayoutProps) => {
   const { orderedGallery } = useAppState();
 
   // useEffect(() => {
-  //   const first = orderedGallery.find(
-  //     (gallery) => gallery.slug === router.pathname.toLowerCase()
-  //   );
-  //   if (first) {
-  //     dispatch({ type: "PAGE_GALLERY", selectedGallery: first });
+  //   console.log("router", router);
+  //   if (router.pathname === "/") {
+  //     dispatch({ type: "IS_HOMEPAGE", isHomepage: true });
+  //   } else {
+  //     dispatch({ type: "IS_HOMEPAGE", isHomepage: false });
   //   }
-  // }, [dispatch, orderedGallery, router.pathname]);
+  //   // const first = orderedGallery.find(
+  //   //   (gallery) => gallery.slug === router.pathname.toLowerCase()
+  //   // );
+  //   // if (first) {
+  //   //   dispatch({ type: "PAGE_GALLERY", selectedGallery: first });
+  //   // }
+  // }, [router, dispatch]);
   return (
     <>
       <Script src="http://localhost:8097" />
       <div className="w-full h-screen relative">
         <Header />
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ background: "red", opacity: 0, transition: { duration: 5 } }}
-          transition={{ delay: 0, duration: 2 }}
+          // initial={{ x: 300, opacity: 1 }}
+          // animate={{ x: 0, opacity: 1 }}
+          // exit={{ x: 300, opacity: 0 }}
+          transition={{
+            type: "spring",
+            duration: 0.1,
+            // stiffness: 260,
+            // damping: 20,
+          }}
         >
           {children}
         </motion.div>
@@ -39,4 +50,4 @@ const Layout = ({ children }: LayoutProps) => {
   );
 };
 
-export default React.memo(Layout);
+export default Layout;
