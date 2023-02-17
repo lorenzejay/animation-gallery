@@ -5,7 +5,7 @@ export function useMediaQuery(query: string) {
 
   useEffect(() => {
     const media = window.matchMedia(query);
-    console.log("media", media);
+
     if (media.matches !== matches) {
       setMatches(media.matches);
     }
@@ -22,3 +22,4 @@ export function useMediaQuery(query: string) {
 export const useIsSmall = () => useMediaQuery("(min-width: 480px)");
 export const useIsMedium = () => useMediaQuery("(min-width: 768px)");
 export const useIsLarge = () => useMediaQuery("(min-width: 1024px)");
+export const useIs3xl = () => useMediaQuery("(min-width: 2000)");

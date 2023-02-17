@@ -5,7 +5,11 @@ import { useAppState } from "@/utils/appReducer";
 const Portraits = () => {
   const { orderedGallery } = useAppState();
 
-  return <AnimatedGallery orderedGallery={orderedGallery} />;
+  return (
+    <div className="overflow-hidden">
+      <AnimatedGallery orderedGallery={orderedGallery} />
+    </div>
+  );
 };
 
 export default Portraits;

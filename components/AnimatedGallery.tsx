@@ -14,14 +14,10 @@ import {
 } from "@/utils/useMedia";
 
 const AnimatedGallery = ({ orderedGallery }) => {
+  const [canOverflow, setCanOverflow] = useState(false);
+  const [scrollTop, setScrollTop] = useState(0);
   const [windowSize, setWindowSize] = useState(0);
-  const animation = useAnimationControls();
-  async function sequence(y: number) {
-    await animation.start({ rotate: 0 });
-    await animation.start({ scale: 2 });
 
-    return animation.start({ y });
-  }
   useEffect(() => {
     function handleResize() {
       setWindowSize(window.innerWidth);
@@ -33,12 +29,31 @@ const AnimatedGallery = ({ orderedGallery }) => {
     setWindowSize(window.innerWidth);
   }, []);
 
+  useEffect(() => {
+    function trackDidScroll(e) {
+      console.log("e.delta", e.deltaY);
+      if (e.delate !== 0) {
+        setCanOverflow(true);
+      }
+    }
+    document.addEventListener("wheel", trackDidScroll);
+  }, [canOverflow]);
+
+  console.log("canOverflow", canOverflow);
+
   const [titleTextDelayDuration, setTitleTextDelayDuration] = useState(0.5);
   const variants =
-    windowSize > 1024
+    windowSize > 2000
       ? {
           animate: {
-            y: 275,
+            y: -800,
+            rotate: 0,
+          },
+        }
+      : windowSize > 1024
+      ? {
+          animate: {
+            y: 10,
             rotate: 0,
           },
         }
@@ -55,32 +70,31 @@ const AnimatedGallery = ({ orderedGallery }) => {
             rotate: 0,
           },
         };
-  const headingVariant =
-    windowSize > 1024
-      ? {
-          animate: {
-            y: -750,
-            opacity: 1,
-          },
-        }
-      : windowSize > 724
-      ? {
-          animate: {
-            y: -650,
-            opacity: 1,
-          },
-        }
-      : {
-          animate: {
-            y: -700,
-            opacity: 1,
-          },
-        };
-  console.log("variants", variants);
+  // const headingVariant =
+  //   windowSize > 1024
+  //     ? {
+  //         animate: {
+  //           y: -750,
+  //           opacity: 1,
+  //         },
+  //       }
+  //     : windowSize > 724
+  //     ? {
+  //         animate: {
+  //           y: -650,
+  //           opacity: 1,
+  //         },
+  //       }
+  //     : {
+  //         animate: {
+  //           y: -700,
+  //           opacity: 1,
+  //         },
+  //       };
+
   return (
-    // <AnimatePresence mode="wait">
     <motion.div
-      className="overflow-x-hidden"
+      className={`${canOverflow ? "max-auto" : "max-h-screen"}`}
       style={{ background: orderedGallery[0].background }}
       variants={{
         initial: {
@@ -91,50 +105,50 @@ const AnimatedGallery = ({ orderedGallery }) => {
         },
         exit: {
           opacity: 0,
-          transition: { duration: 0.75 },
+          transition: { duration: 0.25 },
         },
       }}
       animate={"animate"}
       exit="exit"
       transition={{ duration: 0.1 }}
     >
-      <div className="relative flex justify-center items-center">
-        <AnimatePresence>
-          <motion.div className="pt-32 lg:pt-0 h-screen relative  w-full flex items-center justify-center ">
-            <div
-              key={orderedGallery[0].name}
-              className={`max-w-sm mt-auto`}
-              // initial={{
-              //   // y: -800,
-              //   opacity: 1,
-              //   // y: -40,
-              //   scale: 1.3,
-              // }}
-              // onViewportEnter={() => sequence(variants.animate.y)}
-              // animate="animate"
-              // variants={variants}
-              // transition={
-              //   {
-              //     // duration: 0.75,
-              //     // delay: 0.5,
-              //   }
-              // }
-            >
-              <Image
-                src={orderedGallery[0].imageSrc}
-                alt="s"
-                width={1920}
-                height={2880}
-                className="scale-[1.3] z-10 max-w-[200px] max-h-[250px] mx-auto md:max-w-xs md:max-h-[400px] xl:max-w-[350px] xl:max-h-[437px] 3xl:max-w-none 3xl:max-h-[480px]"
-              />
-            </div>
+      <div className={`relative flex justify-center items-center `}>
+        {/* <AnimatePresence> */}
+        <div className="pt-32 lg:pt-0 h-screen relative  w-full flex items-center justify-center ">
+          <motion.div
+            key={orderedGallery[0].name}
+            className={`max-w-sm mt-auto z-10`}
+            initial={{
+              // y: -800,
+              opacity: 1,
+              // y: -40,
+              // scale: 1.3,
+            }}
+            // onViewportEnter={() => sequence(variants.animate.y)}
+            animate="animate"
+            variants={variants}
+            transition={
+              {
+                // duration: 0.75,
+                // delay: 0.5,
+              }
+            }
+          >
+            <Image
+              src={orderedGallery[0].imageSrc}
+              alt="s"
+              width={1920}
+              height={2880}
+              className="scale-[1.6] z-10 max-w-[200px] max-h-[250px] mx-auto md:max-w-xs md:max-h-[400px] xl:max-w-[350px] xl:max-h-[437px] 3xl:max-h-[480px]"
+            />
           </motion.div>
-        </AnimatePresence>
+        </div>
+        {/* </AnimatePresence> */}
         <motion.div className="w-[1200px] h-full mx-auto absolute text-white">
           {/* <AnimatePresence> */}
           <div
             // className="text-center absolute -bottom-6 md:-bottom-12 lg:-bottom-10 xl:-bottom-14 2xl:-bottom-24 3xl:-bottom-40 left-0 right-0"
-            className="text-center absolute -bottom-6 md:-bottom-12 lg:-bottom-10 xl:-bottom-14 2xl:top-32 3xl:-bottom-40 left-0 right-0"
+            className="text-center absolute -bottom-6 md:-bottom-12 lg:-bottom-10 xl:-bottom-14 2xl:top-32 3xl:top-[17%] left-0 right-0 z-0"
             // initial={{ y: 0, opacity: 0.5 }}
             // animate={"animate"}
             // variants={headingVariant}
@@ -156,13 +170,22 @@ const AnimatedGallery = ({ orderedGallery }) => {
           {/* </AnimatePresence> */}
         </motion.div>
       </div>
-      <AnimatePresence mode="sync">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, y: -300 }}
-          transition={{ duration: 0.75 }}
-          className="px-12 flex justify-between space-x-12"
-        >
+      {/* <AnimatePresence> */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, y: -500 }}
+        transition={{ duration: 0.35, delay: 0 }}
+        className="px-12 flex justify-between space-x-12 3xl:max-w-[2200px] mx-auto"
+      >
+        <Image
+          src={orderedGallery[0].imageSrc}
+          alt="s"
+          width={1920}
+          height={2880}
+          className="max-w-sm max-h-[480px] object-cover"
+        />
+
+        <div className="pt-32">
           <Image
             src={orderedGallery[0].imageSrc}
             alt="s"
@@ -170,20 +193,10 @@ const AnimatedGallery = ({ orderedGallery }) => {
             height={2880}
             className="max-w-sm max-h-[480px] object-cover"
           />
-
-          <div className="pt-32">
-            <Image
-              src={orderedGallery[0].imageSrc}
-              alt="s"
-              width={1920}
-              height={2880}
-              className="max-w-sm max-h-[480px] object-cover"
-            />
-          </div>
-        </motion.div>
-      </AnimatePresence>
+        </div>
+      </motion.div>
+      {/* </AnimatePresence> */}
     </motion.div>
-    // </AnimatePresence>
   );
 };
 

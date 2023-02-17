@@ -14,11 +14,10 @@ import { useEffect, useState } from "react";
 
 const Vivid = () => {
   const [titleTextDelayDuration, setTitleTextDelayDuration] = useState(0.5);
-
   const { orderedGallery } = useAppState();
   const isHomepage = useIsHomepage();
   const dispatch = useAppDispatch();
-  console.log("isHomepage", isHomepage);
+
   // function moveToEnd() {
   //   const copyOrder = [...orderedGallery];
   //   copyOrder.push(copyOrder.shift() as any) as any;
@@ -46,8 +45,9 @@ const Vivid = () => {
       dispatch({ type: "GALLERY_REORDERED", reorderedGallery: newOrder });
     }
   }, [dispatch, router.pathname]);
+
   return (
-    <>
+    <div className="overflow-hidden">
       <AnimatedGallery orderedGallery={orderedGallery} />
       {/* <motion.div
         className="overflow-x-hidden"
@@ -152,7 +152,7 @@ const Vivid = () => {
           </div>
         </motion.div>
       </motion.div> */}
-    </>
+    </div>
   );
 };
 
