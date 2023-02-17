@@ -11,6 +11,7 @@ const ImageAnimation = ({
   setExitTitleY,
   setIsNextPressed,
   isNextPressed,
+  showNumber,
 }: {
   n: any;
   i: number;
@@ -19,36 +20,38 @@ const ImageAnimation = ({
   setExitTitleY: (x: number) => void;
   isNextPressed: boolean;
   setIsNextPressed: (x: boolean) => void;
+  showNumber: number;
 }) => {
   const initialAnimation = useRef(false);
+  const [windowSize, setWindowSize] = useState(0);
 
+  useEffect(() => {
+    function handleResize() {
+      setWindowSize(window.innerWidth);
+    }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  useEffect(() => {
+    setWindowSize(window.innerWidth);
+  }, []);
   useEffect(() => {
     initialAnimation.current = true;
   }, []);
-  // useEffect(() => {
-  //   if (isNextPressed) {
-  //     initialAnimation.current = false;
-  //   }
-  // }, [isNextPressed]);
-  console.log(`isNextPressed-${i}`, isNextPressed);
+  console.log("showNumber", showNumber);
+  console.log("showNumber-i", i);
+  const YPositioning =
+    windowSize > 1024 ? -720 : windowSize > -700 ? -600 : -100;
 
-  // const [originalIsNextPressed, ] = useState(isNextPressed);
-
-  // const [originalIndex, setOriginalIndex] = useState(i);
-  // console.log("originalIsNextPressed", originalIsNextPressed);
   return (
     <motion.div
       key={n}
       className={`absolute max-w-sm top-0 right-0 left-0 mx-auto`}
-      initial={
-        isNextPressed
-          ? false
-          : {
-              x: n.initialX,
-              opacity: 0.75,
-              zIndex: ordered.length - i,
-            }
-      }
+      initial={{
+        x: n.initialX,
+        opacity: 0.75,
+        zIndex: ordered.length - i,
+      }}
       animate={
         isNextPressed && i === 0 ? "slideOut" : "original"
 
@@ -73,7 +76,7 @@ const ImageAnimation = ({
           x: [0, 100, 100],
           z: [1000, 1000, 0, -1],
           opacity: [1, 1, 0.75, 0],
-          transition: { delay: 0.3, duration: 2 },
+          transition: { delay: 0.3, duration: 0.7 },
         },
       }}
       transition={{
@@ -92,10 +95,9 @@ const ImageAnimation = ({
       }}
     >
       <Link
-        scroll={false}
         href={`${n.slug}`}
         key={i}
-        onClick={() => setExitTitleY(-720)}
+        onClick={() => setExitTitleY(YPositioning)}
       >
         <Image
           src={n.imageSrc}

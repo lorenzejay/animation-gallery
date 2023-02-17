@@ -148,7 +148,7 @@ const AnimatedGallery = ({ orderedGallery }) => {
           {/* <AnimatePresence> */}
           <div
             // className="text-center absolute -bottom-6 md:-bottom-12 lg:-bottom-10 xl:-bottom-14 2xl:-bottom-24 3xl:-bottom-40 left-0 right-0"
-            className="text-center absolute -bottom-6 md:-bottom-12 lg:-bottom-10 xl:-bottom-14 2xl:top-32 3xl:top-[17%] left-0 right-0 z-0"
+            className="z-[100] text-center absolute top-32 md:-bottom-12 lg:-bottom-10 xl:-bottom-14 2xl:top-32 3xl:top-[17%] left-0 right-0"
             // initial={{ y: 0, opacity: 0.5 }}
             // animate={"animate"}
             // variants={headingVariant}

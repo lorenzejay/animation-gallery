@@ -8,6 +8,9 @@ import ImageAnimation from "@/components/ImageAnimation";
 import { useAppDispatch, useAppState } from "@/utils/appReducer";
 
 import { useRouter } from "next/router";
+import Image from "next/image";
+import Link from "next/link";
+import ImageAnimation2 from "@/components/ImageAnimation2";
 
 export default function Home() {
   const { orderedGallery } = useAppState();
@@ -24,18 +27,29 @@ export default function Home() {
   console.log("showNumber", showNumber);
 
   const [isNextPressed, setIsNextPressed] = useState(false);
+  const [windowSize, setWindowSize] = useState(0);
 
+  useEffect(() => {
+    function handleResize() {
+      setWindowSize(window.innerWidth);
+    }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  useEffect(() => {
+    setWindowSize(window.innerWidth);
+  }, []);
   function moveToEnd() {
     const copyOrder = [...orderedGallery];
     copyOrder.push(copyOrder.shift() as any) as any;
     // copyOrder.shift();
     setIsNextPressed(true);
     // @ts-ignore
-    // dispatch({ type: "GALLERY_REORDERED", reorderedGallery: [...copyOrder] });
-    setTimeout(() => {
-      // @ts-ignore
-      dispatch({ type: "GALLERY_REORDERED", reorderedGallery: [...copyOrder] });
-    }, 750);
+    dispatch({ type: "GALLERY_REORDERED", reorderedGallery: [...copyOrder] });
+    // setTimeout(() => {
+    //   // @ts-ignore
+    //   dispatch({ type: "GALLERY_REORDERED", reorderedGallery: [...copyOrder] });
+    // }, 1000);
     // setOrdered([...copyOrder]);
   }
   function reverseMove() {
@@ -48,34 +62,41 @@ export default function Home() {
   const [exitTitleY, setExitTitleY] = useState(-100);
   const [exitTextVar, setTextVar] = useState("home");
   const [goingToNewPath, setGoingToNewPath] = useState(false);
+  const YPositioning =
+    windowSize > 1024 ? -720 : windowSize > -700 ? -600 : -100;
 
   console.log("orderedGallery", orderedGallery);
   console.log("exitTextVar", exitTextVar);
-  console.log("titleTextDelayDuration", titleTextDelayDuration);
+  console.log(
+    "rotation",
+    orderedGallery[0].name === orderedGallery[showNumber].name
+      ? "same"
+      : "not same"
+  );
 
-  const [animateVar, setAnimateVar] = useState("animate1");
   const router = useRouter();
-  useEffect(() => {
-    if (exitTitleY <= -101) {
-      return setTextVar("notHome");
-    } else {
-      return setTextVar("home");
-    }
-  }, [exitTitleY]);
+  // useEffect(() => {
+  //   if (exitTitleY <= -101) {
+  //     return setTextVar("notHome");
+  //   } else {
+  //     return setTextVar("home");
+  //   }
+  // }, [exitTitleY]);
 
   useEffect(() => {
-    router.events.on("routeChangeComplete", () => {
+    function togglePathChange() {
       if (router.pathname !== "/") {
         setGoingToNewPath(true);
       }
-    });
+    }
+    router.events.on("routeChangeStart", togglePathChange);
     return () => {
-      router.events.off("routeChangeComplete", () => {
-        console.log("stoped");
-      });
+      router.events.off("routeChangeStart", togglePathChange);
     };
   }, [router.events, router.pathname]);
   // const [showOne, setShowOne] = useState(false);
+  console.log("goingToNewPath", goingToNewPath);
+
   return (
     // <AnimatePresence mode="wait">
     <motion.div
@@ -223,26 +244,15 @@ export default function Home() {
             transition={{ duration: 0.75 }}
             className="mx-auto absolute h-[50vh] left-0 right-0 flex items-center justify-center flex-grow"
           >
-            {/* <AnimatePresence> */}
-            {/* <motion.div
-                initial={{ x: 0, z: 10 }}
-                exit={{
-                  x: [0, 200],
-                  z: -10,
-                  opacity: [1, 0],
-                  transition: { delay: 1, duration: 1 },
-                }}
-                key={orderedGallery[0].imageSrc}
-              >
-                <Image
-                  src={orderedGallery[0].imageSrc}
-                  alt="dsadas"
-                  width={1920}
-                  height={2880}
-                  className="max-w-[200px] max-h-[250px] mx-auto md:max-w-xs md:max-h-[400px] xl:max-w-[350px] xl:max-h-[437px] 3xl:max-w-[690px] 3xl:max-h-[800px]"
-                />
-              </motion.div> */}
-            {orderedGallery.map((n, i) => {
+            {/* <AnimatePresence mode="popLayout"> */}
+            <ImageAnimation2
+              showNumber={showNumber}
+              goingToNewPath={goingToNewPath}
+              setGoingToNewPath={setGoingToNewPath}
+              orderedGallery={orderedGallery}
+            />
+
+            {/* {orderedGallery.map((n, i) => {
               return (
                 <ImageAnimation
                   animateVar={animateVar}
@@ -253,9 +263,10 @@ export default function Home() {
                   setExitTitleY={setExitTitleY}
                   isNextPressed={isNextPressed}
                   setIsNextPressed={setIsNextPressed}
+                  showNumber={showNumber}
                 />
               );
-            })}
+            })} */}
             {/* </AnimatePresence> */}
           </motion.div>
           {/* <AnimatePresence mode="sync"> */}
@@ -300,25 +311,30 @@ export default function Home() {
           {/* </AnimatePresence> */}
         </motion.div>
 
-        {/* <AnimatePresence> */}
+        {/* <AnimatePresence mode="popLayout"> */}
         <motion.div
           className="absolute -bottom-6 md:-bottom-12 lg:-bottom-10 xl:-bottom-14 2xl:-bottom-24 3xl:-bottom-40 "
           initial={{ y: 300, opacity: 0 }}
-          animate={
-            !goingToNewPath
-              ? {
-                  y: 0,
-                  opacity: 0.5,
-                  transition: { delay: titleTextDelayDuration },
-                }
-              : { opacity: [0, 0.5], y: [0, -720] }
-          }
+          animate={{
+            y: 0,
+            opacity: 0.5,
+            transition: { delay: titleTextDelayDuration },
+          }}
+          // animate={
+          //   !goingToNewPath
+          //     ? {
+          //         y: 0,
+          //         opacity: 0.5,
+          //         transition: { delay: titleTextDelayDuration },
+          //       }
+          //     : { opacity: [0, 0.5], y: [0, -720] }
+          // }
           exit={{
             y: [0, -720],
             opacity: [0.5, 1],
             transition: { duration: 0.75, delay: 0.5 },
           }}
-          key={`${orderedGallery[0].type}${goingToNewPath && "path"}`}
+          key={`${orderedGallery[showNumber].type}`}
           variants={{
             home: {
               y: -200,
@@ -337,24 +353,9 @@ export default function Home() {
           transition={{ delay: titleTextDelayDuration }}
           // key={`${orderedGallery[0].type}`}
         >
-          <AnimatePresence>
-            <motion.h2
-              // initial={{ y: 300, opacity: 0 }}
-              // animate={{
-              //   y: 0,
-              //   opacity: 0.5,
-              // }}
-              // exit={{
-              //   y: [0, -720],
-              //   opacity: [0.5, 0.5, 0.5, 1],
-              //   transition: { duration: 1, delay: -1 },
-              // }}
-              key={`${orderedGallery[0].type}${goingToNewPath && "-h2"}`}
-              className="z-[200] text-7xl sm:text-[128px] 2xl:text-[236px] tracking-[0.3rem] capitalize"
-            >
-              {orderedGallery[0].type}
-            </motion.h2>
-          </AnimatePresence>
+          <h2 className="z-[200] text-7xl sm:text-[128px] 2xl:text-[236px] tracking-[0.3rem] capitalize">
+            {orderedGallery[0].type}
+          </h2>
         </motion.div>
         {/* </AnimatePresence> */}
       </main>
