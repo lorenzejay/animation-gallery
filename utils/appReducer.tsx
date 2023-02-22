@@ -24,8 +24,17 @@ function isHomepageReducer(state, action) {
       return state;
   }
 }
+function showNumberReducer(state, action) {
+  switch (action.type) {
+    case "SHOW_NUMBER":
+      return action.isHomepage;
+    default:
+      return state;
+  }
+}
 function appReducer(state, action) {
   return {
+    showNumber: showNumberReducer(state.showNumber, action),
     orderedGallery: galleryReducer(state.reorderedGallery, action),
     selectedGallery: pageGalleryReducer(state.selectedGallery, action),
     isHomepage: isHomepageReducer(state.isHomepageReducer, action),

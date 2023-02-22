@@ -14,20 +14,18 @@ import ImageAnimation2 from "@/components/ImageAnimation2";
 
 export default function Home() {
   const { orderedGallery } = useAppState();
-
-  // console.log("isHomepage", isHomepage);
   const dispatch = useAppDispatch();
-  // const x = useMotionValue(0);
-  // useMotionValueEvent(x, "change", (latest) => {
-  //   console.log("x changed to", latest);
-  // });
-  const [titleTextDelayDuration, setTitleTextDelayDuration] = useState(1.5);
 
+  const [titleTextDelayDuration, setTitleTextDelayDuration] = useState(1.5);
+  const [orderedGalleryCopy, setOrderedGalleryCopy] = useState([
+    ...orderedGallery,
+  ]);
   const [showNumber, setShowNumber] = useState(0);
-  console.log("showNumber", showNumber);
+  console.log("orderedGalleryCopy", orderedGalleryCopy);
 
   const [isNextPressed, setIsNextPressed] = useState(false);
   const [windowSize, setWindowSize] = useState(0);
+  const [index0Opacity, setIndex0Opacity] = useState([0, 1]);
 
   useEffect(() => {
     function handleResize() {
@@ -40,12 +38,13 @@ export default function Home() {
     setWindowSize(window.innerWidth);
   }, []);
   function moveToEnd() {
-    const copyOrder = [...orderedGallery];
-    copyOrder.push(copyOrder.shift() as any) as any;
+    // const copyOrder = [...orderedGallery];
+    orderedGalleryCopy.push(orderedGalleryCopy.shift() as any) as any;
     // copyOrder.shift();
     setIsNextPressed(true);
+    setOrderedGalleryCopy([...(orderedGalleryCopy as any)]);
     // @ts-ignore
-    dispatch({ type: "GALLERY_REORDERED", reorderedGallery: [...copyOrder] });
+    // dispatch({ type: "GALLERY_REORDERED", reorderedGallery: [...copyOrder] });
     // setTimeout(() => {
     //   // @ts-ignore
     //   dispatch({ type: "GALLERY_REORDERED", reorderedGallery: [...copyOrder] });
@@ -101,14 +100,14 @@ export default function Home() {
     // <AnimatePresence mode="wait">
     <motion.div
       className="overflow-hidden"
-      style={{ background: orderedGallery[0].background }}
+      style={{ background: orderedGallery[showNumber].background }}
       variants={{
         initial: {
           background: "#6d7671",
           opacity: 0.9,
         },
         animate: {
-          background: orderedGallery[0].background,
+          background: orderedGallery[showNumber].background,
           opacity: 1,
         },
         exit: {
@@ -226,7 +225,7 @@ export default function Home() {
             onClick={() => {
               setShowNumber((prev) => {
                 if (prev === 0) return prev;
-                reverseMove();
+                // reverseMove();
                 return prev - 1;
               });
             }}
@@ -245,30 +244,103 @@ export default function Home() {
             className="mx-auto absolute h-[50vh] left-0 right-0 flex items-center justify-center flex-grow"
           >
             {/* <AnimatePresence mode="popLayout"> */}
-            <ImageAnimation2
+            {/* <ImageAnimation2
               showNumber={showNumber}
               goingToNewPath={goingToNewPath}
               setGoingToNewPath={setGoingToNewPath}
               orderedGallery={orderedGallery}
-            />
+            /> */}
+            <AnimatePresence mode="popLayout">
+              <motion.div
+                className="z-20"
+                onClick={() => setGoingToNewPath(true)}
+                initial={{ x: 0, opacity: 1 }}
+                animate={
+                  goingToNewPath
+                    ? {
+                        rotate: [-10, 0, 0, 0],
+                        y: [0, 0, 328],
+                        scale: [1, 1, 1.6],
+                        opacity: 1,
+                        transition: {
+                          delay: 0.3,
+                          duration: 1,
+                        },
+                      }
+                    : {
+                        opacity: index0Opacity,
+                        rotate: [0, 0, 0, 0, 0, -10],
+                        z: 21,
+                        transition: { duration: 1 },
+                      }
+                }
+                transition={{ duration: 2 }}
+                exit={goingToNewPath ? "exitNewPath" : "exitNext"}
+                variants={{
+                  exitNext: {
+                    x: 200,
+                    z: 100,
+                    opacity: [1, 1, 1, 1, 0],
+                    rotate: [-10, 10],
+                    transition: {
+                      delay: 0.1,
+                      duration: 1,
+                    },
+                  },
+                  exitNewPath: {
+                    rotate: 0,
+                    transition: {
+                      delay: 0,
+                      duration: 1,
+                    },
+                  },
+                }}
+                key={`${orderedGallery[showNumber].type}-name`}
+              >
+                <Link
+                  href={orderedGallery[showNumber].slug}
+                  onClick={() => setGoingToNewPath(true)}
+                >
+                  <Image
+                    src={orderedGallery[showNumber].imageSrc}
+                    alt="dsadas"
+                    width={1920}
+                    height={2880}
+                    className="max-w-[200px] max-h-[250px] mx-auto md:max-w-xs md:max-h-[400px] xl:max-w-[350px] xl:max-h-[437px] 3xl:max-w-[690px] 3xl:max-h-[800px]"
+                  />
+                </Link>
+              </motion.div>
+            </AnimatePresence>
 
-            {/* {orderedGallery.map((n, i) => {
+            {orderedGallery.map((n, i) => {
+              if (i === showNumber) return <></>;
               return (
-                <ImageAnimation
-                  animateVar={animateVar}
+                <ImageAnimation2
+                  showNumber={showNumber}
+                  goingToNewPath={goingToNewPath}
+                  setGoingToNewPath={setGoingToNewPath}
+                  orderedGallery={orderedGallery}
                   n={n}
                   i={i}
-                  ordered={orderedGallery}
                   key={i}
-                  setExitTitleY={setExitTitleY}
                   isNextPressed={isNextPressed}
                   setIsNextPressed={setIsNextPressed}
-                  showNumber={showNumber}
                 />
+                // <ImageAnimation
+                //   animateVar={animateVar}
+                //   n={n}
+                //   i={i}
+                //   ordered={orderedGallery}
+                //   key={i}
+                //   setExitTitleY={setExitTitleY}
+                //   isNextPressed={isNextPressed}
+                //   setIsNextPressed={setIsNextPressed}
+                //   showNumber={showNumber}
+                // />
               );
-            })} */}
-            {/* </AnimatePresence> */}
+            })}
           </motion.div>
+          {/* </AnimatePresence>
           {/* <AnimatePresence mode="sync"> */}
           <motion.button
             key={"next-btn"}
@@ -282,25 +354,26 @@ export default function Home() {
             }}
             transition={{ delay: 1.5 }}
             onClick={() => {
+              setIndex0Opacity([0, 0, 1]);
+              setIsNextPressed(true);
               // setIsNextPressed(true);
               setTitleTextDelayDuration(0);
               // setTestingAnimation("bringToFront");
+
               setShowNumber((prev) => {
                 if (prev === orderedGallery.length - 1) {
                   return prev;
                 }
                 console.log("orderedGallery1", orderedGallery);
-                moveToEnd();
-                console.log("orderedGallery2", orderedGallery);
-                console.log("originalFirst", orderedGallery[prev]);
-                console.log("originalNow", orderedGallery[0]);
+                // moveToEnd();
                 return prev + 1;
               });
-              setTimeout(() => {
-                if (setIsNextPressed) {
-                  setIsNextPressed(false);
-                }
-              }, 2001);
+
+              // setTimeout(() => {
+              //   if (setIsNextPressed) {
+              //     setIsNextPressed(false);
+              //   }
+              // }, 2001);
             }}
           >
             <motion.div className="border-t-2 w-4 lg:w-16"></motion.div>
@@ -354,7 +427,7 @@ export default function Home() {
           // key={`${orderedGallery[0].type}`}
         >
           <h2 className="z-[200] text-7xl sm:text-[128px] 2xl:text-[236px] tracking-[0.3rem] capitalize">
-            {orderedGallery[0].type}
+            {orderedGallery[showNumber].type}
           </h2>
         </motion.div>
         {/* </AnimatePresence> */}
