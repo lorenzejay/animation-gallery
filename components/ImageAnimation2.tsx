@@ -126,7 +126,7 @@ const ImageAnimation2 = ({
         },
         exitNext: {
           // x: [n.initialX, 0],
-          z: orderedGallery.length - i,
+          // z: orderedGallery.length - i,
           opacity: 1,
           rotate: [0, i * 2],
           transition: {

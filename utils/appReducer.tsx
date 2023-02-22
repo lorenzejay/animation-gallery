@@ -131,6 +131,7 @@ const AppStateContext = React.createContext({
 });
 
 export function AppStateProvider({ children }: { children: any }) {
+  // @ts-ignore
   const [state, dispatch] = React.useReducer(appReducer, getInitialState());
 
   const value = React.useMemo(() => {
